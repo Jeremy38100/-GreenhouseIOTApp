@@ -1,0 +1,7 @@
+{
+  "name": "GreenhouseIOTApp",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "ionic-angular"
+}
