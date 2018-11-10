@@ -1,0 +1,30 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title class="navbar-title">
+        <img class="navbar-img" src="assets/imgs/logos/logop.png">
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding class="card-background-page">
+  <h2 class="hello-title">Bonjour</h2>
+  <ion-refresher (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  <div class="main-image-container">
+    <img src="assets/imgs/grass.png" class="main-image">
+  </div>
+  <ion-card *ngIf="displayNetworkError">
+    <ion-card-content>
+      <h3>Vous n'êtes pas connecté(e) à internet. Veuillez réessayer ultérieurement.</h3>
+      <div class="action-button">
+        <button ion-button (click)="refreshData()">Réessayer</button>
+      </div>
+    </ion-card-content>
+  </ion-card>
+  <ion-card *ngIf="lastData">
+    <ion-card-content>
+      Dernière mesure d'humidité : {{ lastData.data.humidity }}
+    </ion-card-content>
+  </ion-card>
+</ion-content>

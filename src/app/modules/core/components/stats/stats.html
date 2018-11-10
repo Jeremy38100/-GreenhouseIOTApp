@@ -1,0 +1,19 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title class="navbar-title">
+        <img class="navbar-img" src="assets/imgs/logos/logop.png">
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <canvas *ngIf="lineChartData[0].data.length > 0" baseChart width="400" height="400"
+    [datasets]="lineChartData"
+    [labels]="lineChartLabels"
+    [options]="lineChartOptions"
+    [colors]="lineChartColors"
+    [legend]="lineChartLegend"
+    [chartType]="lineChartType"
+    (chartClick)="chartClicked($event)">
+  </canvas>
+</ion-content>

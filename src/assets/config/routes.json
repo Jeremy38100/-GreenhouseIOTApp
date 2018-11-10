@@ -1,0 +1,12 @@
+{
+	"routes": {
+		"getDeviceData": {
+			"url": "/api/deviceData",
+			"method": "GET"
+		},
+		"getLastDeviceData" : {
+			"url": "/api/deviceData/last",
+			"method": "GET"
+		}
+	}
+}

@@ -1,0 +1,17 @@
+{
+	"env": {
+		"name": "dev"
+	},
+	"api": {
+		"protocol": "https",
+		"domain": "prod-iot-app.herokuapp.com",
+		"port": ""
+	},
+	"socket": {
+		"protocol": "wss"
+	},
+	"app": {
+		"debug": true,
+		"HOME_REFRESH_MAX_TIMEOUT": 10000
+	}
+}

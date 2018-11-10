@@ -1,0 +1,17 @@
+{
+	"env": {
+		"name": "local"
+	},
+	"api": {
+		"protocol": "http",
+		"domain": "localhost",
+		"port": 8102
+	},
+	"socket": {
+		"protocol": "ws"
+	},
+	"app": {
+		"debug": true,
+		"HOME_REFRESH_MAX_TIMEOUT": 5000
+	}
+}
