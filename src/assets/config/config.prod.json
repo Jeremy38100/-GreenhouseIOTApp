@@ -1,6 +1,6 @@
 {
 	"env": {
-		"name": "dev"
+		"name": "prod"
 	},
 	"api": {
 		"protocol": "https",

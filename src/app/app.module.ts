@@ -30,7 +30,7 @@ export function initializeApp(
   return () => { 
     return new Promise((resolve, reject) => {
       apiService.initRoutes();
-      configService.load('local');
+      configService.load('prod');
       apiService.loadConfig();
       logService.loadLogs();
       apiService.loadToken()
