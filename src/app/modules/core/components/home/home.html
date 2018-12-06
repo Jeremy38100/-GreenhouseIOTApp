@@ -7,7 +7,7 @@
 </ion-header>
 
 <ion-content padding class="card-background-page">
-  <h2 class="hello-title">Bonjour</h2>
+  <h2 class="title">Bonjour</h2>
   <ion-refresher (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
@@ -24,7 +24,8 @@
   </ion-card>
   <ion-card *ngIf="lastData">
     <ion-card-content>
-      Dernière mesure d'humidité : {{ lastData.data.humidity }}
+      Dernière mesure d'humidité : {{ (100 - (lastData.data.humidity / 1024) * 100).toFixed(0) }}%<br/>
+      Le {{ lastData.createdDate | date : 'dd/MM' }} à {{ lastData.createdDate | date : 'HH:mm' }}
     </ion-card-content>
   </ion-card>
 </ion-content>

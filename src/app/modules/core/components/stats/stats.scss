@@ -1,3 +1,13 @@
 stats {
-  
+  .graph {
+    padding: 10px;
+    position: relative;
+    overflow-x: scroll;
+    width: 100%;
+    .graph-container {
+        height: 300px;
+        width: 600px;
+        min-width: 100%
+    }
+}
 }

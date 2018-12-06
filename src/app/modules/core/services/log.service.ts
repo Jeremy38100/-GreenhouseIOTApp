@@ -30,30 +30,23 @@ export class LogService {
 	 * @return {void}
 	 */
 	loadLogs = (): void => {
-		this.storageService.get('logs').then(logs => {
-			if (logs && Object.getOwnPropertyNames(logs).length > 0) {
-				this.logs = new Map<string, Log>();
-				for (let key in logs) {
-					this.logs.set(key, <Log>logs[key]);
-				}
-			} else {
-				this.logs = new Map<string, Log>();
-				this.saveLogs()
-				.then(() => {})
-				.catch(err => this.error('in LogService.loadLogs.saveLogs()', err));
-			}
-		})
-		.catch(err => {
+		this.logs = this.storageService.get('logs');
+		if (this.logs && Object.getOwnPropertyNames(this.logs).length > 0) {
 			this.logs = new Map<string, Log>();
-			this.error('in LogService.loadLogs()', err);
-		});
+			for (let key in this.logs) {
+				this.logs.set(key, <Log>this.logs[key]);
+			}
+		} else {
+			this.logs = new Map<string, Log>();
+			this.saveLogs();
+		}
 	}
 
 	/**
 	 * Save logs
-	 * @return {Promise<any>} A promise which resolves when logs are saved
+	 * @return {void}
 	 */
-	saveLogs = (): Promise<any> => {
+	saveLogs = (): void => {
 		let logs = {};
 		Array.from(this.logs.keys()).forEach(key => {
 			logs[key] = this.logs.get(key);
@@ -63,9 +56,9 @@ export class LogService {
 
 	/**
 	 * Clear all logs
-	 * @return {Promise<any>} A promise which resolves when logs are cleared
+	 * @return {void} 
 	 */
-	clearLogs = (): Promise<any> => {
+	clearLogs = (): void => {
 		this.logs = new Map<string, Log>();
 		return this.storageService.remove('logs');
 	}
@@ -115,9 +108,7 @@ export class LogService {
 			obj: obj
 		});
 		console.info(string, obj);
-		this.saveLogs()
-		.then(() => {})
-		.catch(err => console.error(err));
+		this.saveLogs();
 	}
 
 	/**
@@ -135,9 +126,7 @@ export class LogService {
 			obj: obj
 		});
 		console.log(string, obj);
-		this.saveLogs()
-		.then(() => {})
-		.catch(err => console.error(err));
+		this.saveLogs();
 	}
 
 	/**
@@ -155,9 +144,7 @@ export class LogService {
 			obj: obj
 		});
 		console.warn(string, obj);
-		this.saveLogs()
-		.then(() => {})
-		.catch(err => console.error(err));
+		this.saveLogs();
 	}
 
 	/**
@@ -175,9 +162,7 @@ export class LogService {
 			obj: obj
 		});
 		console.debug(string, obj);
-		this.saveLogs()
-		.then(() => {})
-		.catch(err => console.error(err));
+		this.saveLogs();
 	}
 
 	/**
@@ -195,9 +180,7 @@ export class LogService {
 			obj: obj
 		});
 		console.error(string, obj);
-		this.saveLogs()
-		.then(() => {})
-		.catch(err => console.error(err));
+		this.saveLogs();
 	}
 
 }

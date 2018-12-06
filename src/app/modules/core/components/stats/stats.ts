@@ -1,9 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { NavController, ToastController } from 'ionic-angular';
 
-import { DeviceData } from '../../model';
+import { DeviceData, Settings, DisplayMethod } from '../../model';
 
 import { AppService } from '../../services/app.service';
+
+import * as moment from 'moment';
+import { BaseChartDirective } from 'ng2-charts';
 
 @Component({
   selector: 'stats',
@@ -12,11 +15,18 @@ import { AppService } from '../../services/app.service';
 export class StatsPage {
 
   public lineChartData:Array<any> = [
-    {data: [], label: 'Humidité'}
+    {data: [], label: 'Humidité (%)'}
   ];
   public lineChartLabels:Array<any> = [];
   public lineChartOptions:any = {
-    responsive: true
+    maintainAspectRatio: false,
+    scales: {
+      yAxes: [{
+        ticks: {
+          beginAtZero: true
+        }
+      }]
+    }
   };
   public lineChartColors:Array<any> = [
     { // grey
@@ -30,30 +40,156 @@ export class StatsPage {
   ];
   public lineChartLegend:boolean = true;
   public lineChartType:string = 'line';
+  public settings: Settings;
+  public isDataAvailable: boolean = false;
+  @ViewChild(BaseChartDirective) chart: BaseChartDirective;
 
   constructor(
     public navCtrl: NavController, 
     private appService: AppService,
     private toastCtrl: ToastController
-  ) {
+  ) {}
+
+  ionViewWillEnter(){
+    console.log("Init data");
+    this.initData();
+  }
+
+  initData = () => {
+    this.settings = this.appService.getSettings();
     this.getData();
   }
 
   getData = () => {
     this.appService.getApi().getDeviceData()
     .then(data => {
-      console.log(data);
-      this.lineChartData[0].data.length = 0;
-      this.lineChartLabels.length = 0;
-      data.forEach((deviceData: DeviceData) => {
-        this.lineChartData[0].data.push(deviceData.data.humidity);
-        this.lineChartLabels.push("");
-      });
-      console.log(this.lineChartData);
+      this.setData(data);
     })
     .catch(err => {
       console.error(err);
     });
+  }
+
+  reloadChart = () => {
+    console.log("Updating chart");
+    if (this.chart !== undefined) {
+      this.chart.chart.update();
+    }
+    this.isDataAvailable = true;
+  }
+
+  setData = (data: any[]) => {
+    this.isDataAvailable = false;
+    this.lineChartData[0].data.length = 0;
+    this.lineChartLabels.length = 0;
+
+    switch (this.settings.displayMethod) {
+      case DisplayMethod.LAST_HOUR:
+        this.setLastHourData(data);
+        break;
+      case DisplayMethod.LAST_DAY:
+        this.setLastDayData(data);
+        break;
+      case DisplayMethod.LAST_WEEK:
+        this.setLastWeekData(data);
+        break;
+      case DisplayMethod.LAST_MONTH:
+        this.setLastMonthData(data);
+        break;
+      default:
+        break;
+    }
+    this.reloadChart();
+  }
+
+  setLastHourData = (data: any[]) => {
+    let occurences = [];
+    for (let i = 0; i < 12; i++) {
+      occurences.push(0);
+      let date = moment().subtract(i * 5, 'minutes');
+      this.lineChartData[0].data.push(0);
+      this.lineChartLabels.splice(0, 0, date.format('HH:mm'));
+    }
+    data.forEach((deviceData: DeviceData) => {
+      let date = moment(deviceData.createdDate);
+      if (date.isBetween(moment().subtract(60, 'minutes'), moment())) {
+        let index = Math.round((60 - moment().minute() + moment(deviceData.createdDate).minute() - 1) / 5);
+        index = (index > 24 ? index - 24 : index);
+        occurences[index] = occurences[index] + 1;
+        this.lineChartData[0].data[index] += (deviceData.data.humidity / 1024) * 100;
+      }
+    });
+    for (let i = 0; i < this.lineChartData[0].data.length; i++) {
+      this.lineChartData[0].data[i] = this.lineChartData[0].data[i] / (occurences[i] ? occurences[i] : 1)
+    }
+  }
+
+  setLastDayData = (data: any[]) => {
+    let occurences = [];
+    for (let i = 0; i < 24; i++) {
+      occurences.push(0);
+      let hour = moment().subtract(i, 'hours');
+      this.lineChartData[0].data.push(0);
+      this.lineChartLabels.splice(0, 0, hour.format('HH') + ':00');
+    }
+    data.forEach((deviceData: DeviceData) => {
+      let date = moment(deviceData.createdDate);
+      if (date.isBetween(moment().subtract(1, 'days'), moment())) {
+        let index = 24 - moment().hour() + moment(deviceData.createdDate).hour() - 1;
+        index = (index > 24 ? index - 24 : index);
+        occurences[index] = occurences[index] + 1;
+        this.lineChartData[0].data[index] += (deviceData.data.humidity / 1024) * 100;
+      }
+    });
+    for (let i = 0; i < this.lineChartData[0].data.length; i++) {
+      this.lineChartData[0].data[i] = this.lineChartData[0].data[i] / (occurences[i] ? occurences[i] : 1)
+    }
+  }
+
+  setLastWeekData = (data: any[]) => {
+    let occurences = [];
+    for (let i = 0; i < 7; i++) {
+      occurences.push(0);
+      let day = moment().subtract(i, 'day');
+      this.lineChartData[0].data.push(0);
+      this.lineChartLabels.splice(0, 0, day.format('DD/MM'));
+    }
+    data.forEach((deviceData: DeviceData) => {
+      let date = moment(deviceData.createdDate);
+      if (date.isBetween(moment().subtract(7, 'days'), moment())) {
+        let index = 7 - moment().date() + moment(deviceData.createdDate).date() - 1;
+        index = (index > 7 ? index - 7 : index);
+        occurences[index] = occurences[index] + 1;
+        this.lineChartData[0].data[index] += (deviceData.data.humidity / 1024) * 100;
+      }
+    });
+    for (let i = 0; i < this.lineChartData[0].data.length; i++) {
+      this.lineChartData[0].data[i] = (this.lineChartData[0].data[i] / (occurences[i] ? occurences[i] : 1)).toFixed(1);
+    }
+    console.log(occurences);
+  }
+
+  setLastMonthData = (data: any[]) => {
+    let occurences = [];
+    for (let i = 0; i < 30; i++) {
+      occurences.push(0);
+      let day = moment().subtract(i, 'day');
+      this.lineChartData[0].data.push(0);
+      this.lineChartLabels.splice(0, 0, day.format('DD/MM'));
+    }
+    data.forEach((deviceData: DeviceData) => {
+      let date = moment(deviceData.createdDate);
+      if (date.isBetween(moment().subtract(30, 'days'), moment())) {
+        let index = 30 - moment().date() + moment(deviceData.createdDate).date() - 1;
+        index = (index > 30 ? index - 30 : index);
+        occurences[index] = occurences[index] + 1;
+        this.lineChartData[0].data[index] += (deviceData.data.humidity / 1024) * 100;
+      }
+    });
+    for (let i = 0; i < this.lineChartData[0].data.length; i++) {
+      this.lineChartData[0].data[i] = (this.lineChartData[0].data[i] / (occurences[i] ? occurences[i] : 1)).toFixed(1);
+    }
+    console.log(occurences);
   }
 
   chartClicked = (e:any):void => {

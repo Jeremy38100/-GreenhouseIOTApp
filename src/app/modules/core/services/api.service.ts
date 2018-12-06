@@ -60,12 +60,8 @@ export class APIService {
 	 */
 	loadToken = (): Promise<any> => {
 		return new Promise((resolve, reject) => {
-			this.storageService.get('access_token')
-			.then(token => {
-				this.token = token
-				resolve(token);
-			})
-			.catch(err => reject(err));
+			this.token = this.storageService.get('access_token');
+			resolve(this.token);
 		});
 	}
 

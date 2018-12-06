@@ -1,0 +1,31 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title class="navbar-title">
+        <img class="navbar-img" src="assets/imgs/logos/logop.png">
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <h2 class="title">Leçons</h2>
+  <ion-list *ngIf="lessons && lessonsStatus">
+    <ion-item [ngClass]="getStatusByLesson(lesson) ? 'done' : ''" (click)="open(lesson)" *ngFor="let lesson of lessons">
+      <ion-avatar item-start>
+        <img [src]="lesson.image || 'assets/imgs/logos/book.png'">
+      </ion-avatar>
+      <h2>{{ lesson.title }}</h2>
+      <h3>Difficulté : <div class="difficulty-rating"><rating [(ngModel)]="lesson.difficulty" 
+        readOnly="true"
+        max="3"
+        emptyStarIconName="star-outline"
+        halfStarIconName="star-half"
+        starIconName="star">
+      </rating></div></h3>
+      <div class="checkbox-container" item-end>
+        <ion-item>
+            <ion-checkbox disabled [checked]="getStatusByLesson(lesson)"></ion-checkbox>
+        </ion-item>
+      </div>
+    </ion-item>
+  </ion-list>
+</ion-content>

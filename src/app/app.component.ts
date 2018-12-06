@@ -11,12 +11,16 @@ import { TabsPage } from './modules/core/components/tabs/tabs';
 export class MyApp {
   rootPage:any = TabsPage;
 
-  constructor(platform: Platform, statusBar: StatusBar, splashScreen: SplashScreen) {
+  constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen) {
     platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
-      statusBar.styleDefault();
-      splashScreen.hide();
+      if (this.platform.is('ios')) {
+        this.statusBar.overlaysWebView(false);
+      }
+      this.statusBar.styleBlackTranslucent();
+      this.statusBar.backgroundColorByHexString('41c136');
+      this.splashScreen.hide();
     });
   }
 }

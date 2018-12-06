@@ -24,7 +24,9 @@ export class HomePage {
     private logService: LogService,
     private loadingCtrl: LoadingController,
     private events: Events
-  ) {
+  ) {}
+
+  ionViewDidLoad(){
     this.initNetworkListener();
     setTimeout(() => {
       this.refreshData();

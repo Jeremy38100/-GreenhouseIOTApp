@@ -8,11 +8,15 @@ import {
 	NetworkConnectionType, 
 	AppEvents, 
 	AppConfiguration,
-	IOTAppErrors } from '../model';
+	IOTAppErrors,
+	DisplayMethod,
+	Lesson,
+	LessonStatus } from '../model';
 
 import { APIService, APIRoute } from './api.service';
 import { ConfigService } from './config.service';
 import { HttpService } from './http.service';
+import { LessonService } from './lesson.service';
 import { LogService } from './log.service';
 import { NetworkService } from './network.service';
 import { SocketService } from './socket.service';
@@ -29,6 +33,7 @@ export class AppService {
 		public 	api 							: APIService,
 		private configService 		: ConfigService,
 		private httpService				: HttpService,
+		private lessonService 		: LessonService,
 		private logService				: LogService,
 		private networkService		: NetworkService,
 		private socketService			: SocketService,
@@ -47,33 +52,26 @@ export class AppService {
 
 	/**
 	 * Get the settings
-	 * @return {Promise<Settings>} A promise which resolves when settings are found
+	 * @return {Settings} The settings
 	 */
-	getSettings = (): Promise<Settings> => {
-		return new Promise((resolve, reject) => {
-			this.getFromStorage('settings')
-			.then(settings => {
-				if (settings) resolve(<Settings>settings);
-				else {
-					let newSettings = <Settings>{
-						maxDistance: 500
-					};
-					resolve(newSettings);
-					this.saveSettings(newSettings)
-					.then(() => {})
-					.catch(err => reject(err));
-				}
-			})
-			.catch(reject);
-		});
+	getSettings = (): Settings => {
+		let settings = <Settings>this.getFromStorage('settings');
+		if (settings) return settings;
+		else {
+			let newSettings = <Settings>{
+				displayMethod: DisplayMethod.LAST_DAY
+			};
+			this.saveSettings(newSettings);
+			return newSettings;
+		}
 	}
 
 	/**
 	 * Save settings in storage
 	 * @param {Settings} settings The settings to save
-	 * @return {Promise} A promise which resolves when settings are saved
+	 * @return {void}
 	 */
-	saveSettings = (settings: Settings): Promise<any> => {
+	saveSettings = (settings: Settings): void => {
 		return this.setInStorage('settings', settings);
 	}
 
@@ -151,44 +149,36 @@ export class AppService {
 	 * Set anything in storage
 	 * @param {string} key The key
 	 * @param {any} value The value to save
-	 * @return {Promise} A promise which resolves when the object is saved
+	 * @return {void}
 	 */
-	setInStorage = (key, value) : Promise<any> => {
+	setInStorage = (key: string, value: any) : void => {
 		return this.storageService.set(key, value);
 	}
 
 	/**
 	 * Get anything from storage
 	 * @param {string} key The key
-	 * @return {Promise} A promise which resolves when the object is retrieved
+	 * @return {any} The object retrieved
 	 */
-	getFromStorage = (key) : Promise<any> => {
+	getFromStorage = (key) : any => {
 		return this.storageService.get(key);
 	}
 
 	/**
 	 * Remove from storage
 	 * @param {string} key The key
-	 * @return {Promise} A promise which resolves when the value is removed
+	 * @return {void}
 	 */
-	removeFromStorage = (key) : Promise<any> => {
+	removeFromStorage = (key: string) : void => {
 		return this.storageService.remove(key);
 	}
 
 	/**
 	 * Clear all the storage
-	 * @return {Promise} A promise which resolves when the storage is clear
+	 * @return {void}
 	 */
-	clearStorage = () : Promise<any> => {
+	clearStorage = () : void => {
 		return this.storageService.clear();
-	}
-
-	/**
-	 * Get all keys in storage
-	 * @return {Promise} A promise which resolve when all keys have been retrieved
-	 */
-	keysFromStorage = () : Promise<any> => {
-		return this.storageService.keys();
 	}
 
 
@@ -396,6 +386,43 @@ export class AppService {
 		} else {
 			return this.networkState;
 		}
+	}
+
+
+	// LESSON SERVICE FUNCTIONS 
+
+  /**
+   * Get all lessons
+   * @return {Lesson[]} The lesson
+   */
+	getLessons = (): Lesson[] => {
+		return this.lessonService.getLessons();
+	}
+
+	/**
+	 * Get the lessons status
+	 * @return {LessonStatus[]} The lessons status
+	 */
+	getLessonsStatus = (): LessonStatus[] => {
+		return this.lessonService.getLessonsStatus();
+	}
+
+	/**
+	 * Save lessons status in storage
+	 * @param {LessonStatus[]} lessonsStatus The lessons status to save
+	 * @return {void}
+   */
+	saveLessonsStats = (lessonsStatus: LessonStatus[]): void => {
+		return this.lessonService.saveLessonsStatus(lessonsStatus);
+	}
+
+	/**
+   * Toggle the lesson status
+   * @param {number} id The lesson id
+   * @return {void}
+   */
+	toggleLessonStatus = (id: number, force?: boolean): void => {
+		return this.lessonService.toggleLessonStatus(id, force);
 	}
 
 

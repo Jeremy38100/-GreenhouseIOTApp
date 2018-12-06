@@ -9,6 +9,14 @@ export interface DeviceData {
 };
 
 export interface Settings {
+  displayMethod: DisplayMethod
+};
+
+export enum DisplayMethod {
+  LAST_HOUR = 'Last hour',
+  LAST_DAY = 'Last day',
+  LAST_WEEK = 'Last week',
+  LAST_MONTH = 'Last month'
 };
 
 export enum SocketEvent {
@@ -43,6 +51,25 @@ export interface AppConfiguration {
     debug: boolean,
     HOME_REFRESH_MAX_TIMEOUT: number
   }
+};
+
+export interface Lesson {
+  id: number,
+  title: string,
+  description: string,
+  difficulty: number,
+  sections?: Section[],
+  image?: string
+};
+
+export interface Section {
+  title?: string,
+  paragraph?: string
+};
+
+export interface LessonStatus {
+  id: number,
+  done: boolean
 };
 
 export enum NetworkConnectionType {
