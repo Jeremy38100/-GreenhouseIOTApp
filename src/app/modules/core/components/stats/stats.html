@@ -9,10 +9,12 @@
 <ion-content padding>
   <h2 class="title">Statistiques</h2>
   <div class="sub-title" *ngIf="settings">
-    <h6 *ngIf="settings.displayMethod === 'Last hour'">Sur les 60 dernières minutes</h6>
-    <h6 *ngIf="settings.displayMethod === 'Last day'">Sur les 24 dernières heures</h6>
-    <h6 *ngIf="settings.displayMethod === 'Last week'">Sur les 7 derniers jours</h6>
-    <h6 *ngIf="settings.displayMethod === 'Last month'">Sur les 30 derniers jours</h6>
+    <ion-label>Données :</ion-label>
+    <ion-select (ionChange)="onMethodChanged()" [(ngModel)]="settings.displayMethod">
+      <ion-option *ngFor="let method of displayMethods" [value]="method">
+        {{ getStringFromDisplayMethod(method) }}
+      </ion-option>
+    </ion-select>
   </div>
   <div class="graph">
       <div *ngIf="isDataAvailable" class="graph-container">

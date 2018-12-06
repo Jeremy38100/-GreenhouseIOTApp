@@ -42,6 +42,8 @@ export class StatsPage {
   public lineChartType:string = 'line';
   public settings: Settings;
   public isDataAvailable: boolean = false;
+  public displayMethods: string[] = Object.keys(DisplayMethod).map((key) => DisplayMethod[key]);
+  private data: DeviceData[];
   @ViewChild(BaseChartDirective) chart: BaseChartDirective;
 
   constructor(
@@ -63,7 +65,8 @@ export class StatsPage {
   getData = () => {
     this.appService.getApi().getDeviceData()
     .then(data => {
-      this.setData(data);
+      this.data = data;
+      this.setData();
     })
     .catch(err => {
       console.error(err);
@@ -78,23 +81,23 @@ export class StatsPage {
     this.isDataAvailable = true;
   }
 
-  setData = (data: any[]) => {
+  setData = () => {
     this.isDataAvailable = false;
     this.lineChartData[0].data.length = 0;
     this.lineChartLabels.length = 0;
 
     switch (this.settings.displayMethod) {
       case DisplayMethod.LAST_HOUR:
-        this.setLastHourData(data);
+        this.setLastHourData(this.data);
         break;
       case DisplayMethod.LAST_DAY:
-        this.setLastDayData(data);
+        this.setLastDayData(this.data);
         break;
       case DisplayMethod.LAST_WEEK:
-        this.setLastWeekData(data);
+        this.setLastWeekData(this.data);
         break;
       case DisplayMethod.LAST_MONTH:
-        this.setLastMonthData(data);
+        this.setLastMonthData(this.data);
         break;
       default:
         break;
@@ -190,6 +193,27 @@ export class StatsPage {
       this.lineChartData[0].data[i] = (this.lineChartData[0].data[i] / (occurences[i] ? occurences[i] : 1)).toFixed(1);
     }
     console.log(occurences);
+  }
+
+  getStringFromDisplayMethod = (method: string) => {
+    switch (method) {
+      case DisplayMethod.LAST_HOUR:
+        return "Sur les 60 dernières minutes";
+      case DisplayMethod.LAST_DAY:
+        return "Sur les 24 dernières heures";
+      case DisplayMethod.LAST_WEEK:
+        return "Sur les 7 derniers jours";
+      case DisplayMethod.LAST_MONTH:
+        return "Sur les 30 derniers jours";
+      default:
+        return "";
+    }
+  }
+
+  onMethodChanged = () => {
+    console.log("changed");
+    this.appService.saveSettings(this.settings);
+    this.setData();
   }
 
   chartClicked = (e:any):void => {
