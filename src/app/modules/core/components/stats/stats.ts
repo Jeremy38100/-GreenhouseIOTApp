@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { NavController, ToastController } from 'ionic-angular';
+import { NavController } from 'ionic-angular';
 
 import { DeviceData, Settings, DisplayMethod } from '../../model';
 
@@ -23,7 +23,9 @@ export class StatsPage {
     scales: {
       yAxes: [{
         ticks: {
-          beginAtZero: true
+          beginAtZero: true,
+          min: 0,
+          max: 100
         }
       }]
     }
@@ -48,8 +50,7 @@ export class StatsPage {
 
   constructor(
     public navCtrl: NavController, 
-    private appService: AppService,
-    private toastCtrl: ToastController
+    private appService: AppService
   ) {}
 
   ionViewWillEnter(){
@@ -102,6 +103,7 @@ export class StatsPage {
       default:
         break;
     }
+    console.log(this.lineChartData);
     this.reloadChart();
   }
 
@@ -117,9 +119,9 @@ export class StatsPage {
       let date = moment(deviceData.createdDate);
       if (date.isBetween(moment().subtract(60, 'minutes'), moment())) {
         let index = Math.round((60 - moment().minute() + moment(deviceData.createdDate).minute() - 1) / 5);
-        index = (index > 24 ? index - 24 : index);
+        index = (index >= 12 ? index - 12 : index);
         occurences[index] = occurences[index] + 1;
-        this.lineChartData[0].data[index] += (deviceData.data.humidity / 1024) * 100;
+        this.lineChartData[0].data[index] += 100 - (deviceData.data.humidity / 1024) * 100;
       }
     });
     for (let i = 0; i < this.lineChartData[0].data.length; i++) {
@@ -139,9 +141,9 @@ export class StatsPage {
       let date = moment(deviceData.createdDate);
       if (date.isBetween(moment().subtract(1, 'days'), moment())) {
         let index = 24 - moment().hour() + moment(deviceData.createdDate).hour() - 1;
-        index = (index > 24 ? index - 24 : index);
+        index = (index >= 24 ? index - 24 : index);
         occurences[index] = occurences[index] + 1;
-        this.lineChartData[0].data[index] += (deviceData.data.humidity / 1024) * 100;
+        this.lineChartData[0].data[index] += 100 - (deviceData.data.humidity / 1024) * 100;
       }
     });
     for (let i = 0; i < this.lineChartData[0].data.length; i++) {
@@ -161,15 +163,14 @@ export class StatsPage {
       let date = moment(deviceData.createdDate);
       if (date.isBetween(moment().subtract(7, 'days'), moment())) {
         let index = 7 - moment().date() + moment(deviceData.createdDate).date() - 1;
-        index = (index > 7 ? index - 7 : index);
+        index = (index >= 7 ? index - 7 : index);
         occurences[index] = occurences[index] + 1;
-        this.lineChartData[0].data[index] += (deviceData.data.humidity / 1024) * 100;
+        this.lineChartData[0].data[index] += 100 - (deviceData.data.humidity / 1024) * 100;
       }
     });
     for (let i = 0; i < this.lineChartData[0].data.length; i++) {
       this.lineChartData[0].data[i] = (this.lineChartData[0].data[i] / (occurences[i] ? occurences[i] : 1)).toFixed(1);
     }
-    console.log(occurences);
   }
 
   setLastMonthData = (data: any[]) => {
@@ -192,7 +193,6 @@ export class StatsPage {
     for (let i = 0; i < this.lineChartData[0].data.length; i++) {
       this.lineChartData[0].data[i] = (this.lineChartData[0].data[i] / (occurences[i] ? occurences[i] : 1)).toFixed(1);
     }
-    console.log(occurences);
   }
 
   getStringFromDisplayMethod = (method: string) => {
@@ -211,7 +211,6 @@ export class StatsPage {
   }
 
   onMethodChanged = () => {
-    console.log("changed");
     this.appService.saveSettings(this.settings);
     this.setData();
   }

@@ -1,12 +1,13 @@
 import { Component } from '@angular/core';
-import { NavController, PopoverController, LoadingController, Events } from 'ionic-angular';
+import { NavController, Events } from 'ionic-angular';
 
 import { NetworkConnectionType, AppEvents, DeviceData } from '../../model';
 
 import { AppService } from '../../services/app.service';
-import { LogService } from '../../services/log.service';
 
 import { SettingsPage } from '../settings/settings';
+
+import * as moment from 'moment';
 
 @Component({
   selector: 'page-home',
@@ -19,10 +20,7 @@ export class HomePage {
 
   constructor(
     public navCtrl: NavController, 
-    private popoverCtrl: PopoverController,
     private appService: AppService,
-    private logService: LogService,
-    private loadingCtrl: LoadingController,
     private events: Events
   ) {}
 
@@ -53,7 +51,10 @@ export class HomePage {
   initSocketListener = () => {
     this.appService.onSocketMessage().subscribe(message => {
       let deviceData = <DeviceData>message;
+      console.log("New deviceData received : ", deviceData);
       this.lastData = deviceData;
+      let now = moment();
+      this.lastData.createdDate = now.format('YYYY-MM-DD') + 'T' + now.format('HH:mm:ss.SSS') + 'Z';
     });
   }
 

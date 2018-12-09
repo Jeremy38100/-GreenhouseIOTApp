@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, ToastController } from 'ionic-angular';
+import { NavController } from 'ionic-angular';
 
 import { LessonPage } from '../lesson/lesson';
 
@@ -20,8 +20,7 @@ export class LessonsPage {
 
   constructor(
     public navCtrl: NavController, 
-    private appService: AppService,
-    private toastCtrl: ToastController
+    private appService: AppService
   ) { }
 
   ionViewWillEnter = () => {
