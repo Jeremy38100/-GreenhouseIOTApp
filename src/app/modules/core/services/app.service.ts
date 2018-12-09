@@ -8,7 +8,6 @@ import {
 	NetworkConnectionType, 
 	AppEvents, 
 	AppConfiguration,
-	IOTAppErrors,
 	DisplayMethod,
 	Lesson,
 	LessonStatus } from '../model';

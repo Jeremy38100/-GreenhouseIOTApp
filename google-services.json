@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "142671787011",
+    "firebase_url": "https://iotapp-e0b93.firebaseio.com",
+    "project_id": "iotapp-e0b93",
+    "storage_bucket": "iotapp-e0b93.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:142671787011:android:6b672f6c222cd2e0",
+        "android_client_info": {
+          "package_name": "com.miage.iot"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "142671787011-ol8jc95bvkapvgjuss8bc7rpcl3jedbs.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB_VJKC8O11abc8PBbCo-usIhJwYEHAa4E"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
