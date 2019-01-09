@@ -2,7 +2,7 @@
     <ion-navbar>
     </ion-navbar>
   </ion-header>
-  
+
   <ion-content padding>
     <div *ngIf="lesson">
       <h2 class="title">{{ lesson.title }}</h2>
@@ -10,11 +10,11 @@
       <div class="sections" *ngIf="lesson.sections.length > 0">
         <div class="section" *ngFor="let section of lesson.sections">
           <h4>{{ section.title }}</h4>
-          <p>{{ section.paragraph }}</p>
+          <div [innerHTML]="section.paragraph"></div>
+          <!-- <p>{{ section.paragraph }}</p> -->
         </div>
       </div>
       <button *ngIf="!lessonStatus.done" ion-button color="primary" (click)="checkLesson()" >J'ai fini</button>
       <button *ngIf="lessonStatus.done" ion-button color="primary" (click)="checkLesson()" >Rééxplique-moi</button>
     </div>
   </ion-content>
-  
