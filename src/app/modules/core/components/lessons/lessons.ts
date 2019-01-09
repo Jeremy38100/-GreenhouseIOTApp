@@ -17,6 +17,8 @@ export class LessonsPage {
   public debug: boolean;
   public lessons: Lesson[];
   public lessonsStatus: LessonStatus[];
+  public score: number = 0;
+  public math = Math;
 
   constructor(
     public navCtrl: NavController, 
@@ -24,8 +26,17 @@ export class LessonsPage {
   ) { }
 
   ionViewWillEnter = () => {
+    this.score = 0;
     this.lessons = this.appService.getLessons();
+    this.lessons.sort((lesson1, lesson2) => {
+      return lesson1.difficulty - lesson2.difficulty;
+    });
     this.lessonsStatus = this.appService.getLessonsStatus();
+    this.lessonsStatus.forEach(lessonStatus => {
+      if (lessonStatus.done) {
+        this.score++;
+      }
+    });
   }
   
   open = (lesson: Lesson) => {

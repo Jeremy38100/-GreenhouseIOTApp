@@ -8,6 +8,16 @@
 
 <ion-content>
   <h2 class="title">Leçons</h2>
+  <div *ngIf="lessons">
+    <div style="text-align: center; width: 100%; margin-bottom: 15px;">
+      <img style="max-width: 40px; max-height: 40px; vertical-align: middle;" *ngIf="(score / lessons.length) === 1" src="assets/imgs/medieval-crown.png">
+    </div>
+    <div class="progress-bar-container">
+      <div class="progress-bar" [ngStyle]="{width: math.floor((score / lessons.length) * 100) + '%'}"></div>
+    </div>
+    <p style="text-align: center; vertical-align: middle; font-size: 1.1em;">Complétées à {{ math.floor((score / lessons.length) * 100) }} % 
+    </p>
+  </div>
   <ion-list *ngIf="lessons && lessonsStatus">
     <ion-item [ngClass]="getStatusByLesson(lesson) ? 'done' : ''" (click)="open(lesson)" *ngFor="let lesson of lessons">
       <ion-avatar item-start>
