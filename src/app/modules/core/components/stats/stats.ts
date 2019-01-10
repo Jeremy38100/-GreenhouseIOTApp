@@ -121,7 +121,7 @@ export class StatsPage {
         let index = Math.round((60 - moment().minute() + moment(deviceData.createdDate).minute() - 1) / 5);
         index = (index >= 12 ? index - 12 : index);
         occurences[index] = occurences[index] + 1;
-        this.lineChartData[0].data[index] += 100 - (deviceData.data.humidity / 1024) * 100;
+        this.lineChartData[0].data[index] += (deviceData.data.humidity / 1024) * 100;
       }
     });
     for (let i = 0; i < this.lineChartData[0].data.length; i++) {

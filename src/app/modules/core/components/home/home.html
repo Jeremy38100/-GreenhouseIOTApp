@@ -24,7 +24,7 @@
   </ion-card>
   <ion-card *ngIf="lastData">
     <ion-card-content>
-      Dernière mesure d'humidité : {{ (100 - (lastData.data.humidity / 1024) * 100).toFixed(0) }}%<br/>
+      Dernière mesure d'humidité : {{ ((lastData.data.humidity / 1024) * 100).toFixed(0) }}%<br/>
       Le {{ lastData.createdDate | date : 'dd/MM' }} à {{ lastData.createdDate | date : 'HH:mm' }}
     </ion-card-content>
   </ion-card>
