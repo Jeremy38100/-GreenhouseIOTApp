@@ -1,8 +1,7 @@
 {
   "name": "cultivemoi",
-  "version": "0.0.1",
+  "version": "0.5.1",
   "author": "Jules Dommartin, Pablo Jimenez, Nathan Prinsac, Jérémy Roche, Max Sanfilippo",
-  "homepage": "",
   "private": true,
   "scripts": {
     "start": "ionic-app-scripts serve",
