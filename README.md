@@ -1,6 +1,6 @@
-# GreenhouseIOTApp
+# Cultive-Moi App
 
-Client side of GreenhouseIOT App
+Client side of Cultive-Moi App
 
 ___
 
